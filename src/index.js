@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+
 const pizzaData = [
   {
     name: "Focaccia",
@@ -45,6 +46,7 @@ const pizzaData = [
     soldOut: false,
   },
 ];
+
 function App() {
   return (
     <div className="container">
@@ -54,54 +56,130 @@ function App() {
     </div>
   );
 }
+
 function Header() {
+  // const style = { color: "red", fontSize: "48px", textTransform: "uppercase" };
+  const style = {};
+
   return (
     <header className="header">
-      <h1>Prajwol Pizzaco</h1>
+      <h1 style={style}>React Pizza Co.</h1>
     </header>
   );
 }
+
 function Menu() {
+  const pizzas = pizzaData;
+  // const pizzas = [];
+  const numPizzas = pizzas.length;
+
   return (
     <main className="menu">
       <h2>Our menu</h2>
-      <Pizza
+
+      {numPizzas > 0 ? (
+        <>
+          <p>
+            Authentic Italian cuisine. 6 creative dishes to choose from. All
+            from our stone oven, all organic, all delicious.
+          </p>
+
+          <ul className="pizzas">
+            {pizzas.map((pizza) => (
+              <Pizza pizzaObj={pizza} key={pizza.name} />
+            ))}
+          </ul>
+        </>
+      ) : (
+        <p>We're still working on our menu. Please come back later :)</p>
+      )}
+
+      {/* <Pizza
         name="Pizza Spinaci"
-        ingredient="tomato, mozarella, spinach, and ricotta cheese"
+        ingredients="Tomato, mozarella, spinach, and ricotta cheese"
         photoName="pizzas/spinaci.jpg"
         price={10}
       />
+      <Pizza
+        name="Pizza Funghi"
+        ingredients="Tomato, mushrooms"
+        price={12}
+        photoName="pizzas/funghi.jpg"
+      /> */}
     </main>
   );
 }
-//
-function Pizza(props) {
-  console.log([props]);
+
+function Pizza({ pizzaObj }) {
+  console.log(pizzaObj);
+
+  // if (pizzaObj.soldOut) return null;
+
   return (
-    <div>
-      <img src={props.photoName} alt={props.name} />
+    <li className={`pizza ${pizzaObj.soldOut ? "sold-out" : ""}`}>
+      <img src={pizzaObj.photoName} alt={pizzaObj.name} />
       <div>
-        <h3>{props.name}</h3>
-        <p>{props.ingredient}</p>
-        <span>{props.price + 2}</span>
+        <h3>{pizzaObj.name}</h3>
+        <p>{pizzaObj.ingredients}</p>
+
+        {/* {pizzaObj.soldOut ? (
+          <span>SOLD OUT</span>
+        ) : (
+          <span>{pizzaObj.price}</span>
+        )} */}
+
+        <span>{pizzaObj.soldOut ? "SOLD OUT" : pizzaObj.price}</span>
       </div>
+    </li>
+  );
+}
+
+function Footer() {
+  const hour = new Date().getHours();
+  const openHour = 12;
+  const closeHour = 22;
+  const isOpen = hour >= openHour && hour <= closeHour;
+  console.log(isOpen);
+
+  // if (hour >= openHour && hour <= closeHour) alert("We're currently open!");
+  // else alert("Sorry we're closed");
+
+  // if (!isOpen) return <p>CLOSED</p>;
+
+  return (
+    <footer className="footer">
+      {isOpen ? (
+        <Order closeHour={closeHour} openHour={openHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
+    </footer>
+  );
+
+  // return React.createElement("footer", null, "We're currently open!");
+}
+
+function Order({ closeHour, openHour }) {
+  return (
+    <div className="order">
+      <p>
+        We're open from {openHour}:00 to {closeHour}:00. Come visit us or order
+        online.
+      </p>
+      <button className="btn">Order</button>
     </div>
   );
 }
-function Footer() {
-  // const hour = new Date().getHours();
-  // const openHour = 7;
-  // const closeHour = 8;
-  // if (hour >= openHour && hour <= closeHour) alert("We're currently open");
-  // else alert("we're close");
-  return <footer>we're currently open</footer>;
-  // return React.createElement("footer", null, "We'er currently open");
-}
 
-//react v!18
+// React v18
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
 );
+
+// React before 18
+// ReactDOM.render(<App />, document.getElementById("root"));
